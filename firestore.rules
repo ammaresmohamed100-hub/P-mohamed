@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // صاحب الحساب: إيميل متفعّل ومكتوب هنا. ضيف إيميلك بحروف صغيرة
+    function isOwner() {
+      return request.auth != null && request.auth.token.email_verified == true
+        && request.auth.token.email in ['ammaresmohamed100@gmail.com'];
+    }
+    // مسموح له يدخل اللوحة: صاحب الحساب، أو حساب متفعّل وافق عليه صاحب الحساب (موجود في staff)
+    function isAdmin() {
+      return isOwner() || (request.auth != null && request.auth.token.email_verified == true
+        && exists(/databases/$(database)/documents/staff/$(request.auth.token.email)));
+    }
+    function prod() {
+      return get(/databases/$(database)/documents/products/$(request.resource.data.productId)).data;
+    }
+
+    // المنتجات: انت بس اللي تضيف وتعدل وتحذف. العميل يقدر يقرأ منتج واحد شغال بالكود بتاعه بس (مفيش عرض لكل المنتجات)
+    match /products/{pid} {
+      allow get: if resource.data.active == true;
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    // طلبات إنشاء الحسابات: أي حد مسجل بإيميل متفعّل يقدر يسجل طلب لنفسه بس، وصاحب الحساب بس اللي يشوفها ويوافق
+    match /access/{uid} {
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.auth.token.email_verified == true
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.keys().hasOnly(['email','createdAt']);
+      allow read, delete: if isOwner();
+    }
+    match /staff/{em} {
+      allow read, write: if isOwner();
+    }
+
+    match /payments/{id} {
+      // العميل (من غير دخول) يسجل طلب "بانتظار التأكيد" بس، والمبلغ واسم المنتج لازم يطابقوا اللي في قاعدة البيانات
+      allow create: if request.resource.data.status == 'pending'
+        && request.resource.data.productId is string
+        && exists(/databases/$(database)/documents/products/$(request.resource.data.productId))
+        && prod().active == true
+        && request.resource.data.amount == prod().price
+        && request.resource.data.item == prod().name
+        && request.resource.data.method in ['instapay','vodafone','card','cod']
+        && request.resource.data.name is string && request.resource.data.name.size() <= 60
+        && request.resource.data.phone.matches('^01[0-9]{9}$')
+        && request.resource.data.note.size() <= 200
+        && request.resource.data.createdAt == request.time
+        && (request.resource.data.method != 'cod' || ('address' in request.resource.data
+              && request.resource.data.address is string
+              && request.resource.data.address.size() >= 8))
+        && (!('address' in request.resource.data) || (request.resource.data.address is string
+              && request.resource.data.address.size() <= 250))
+        && request.resource.data.keys().hasOnly(['amount','method','name','phone','note','status','createdAt','address','item','productId']);
+
+      allow read, update, create: if isAdmin();
+    }
+  }
+}

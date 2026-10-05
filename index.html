@@ -1,0 +1,131 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>لوحة التحويلات</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--g:#047857;--m:#5b6b64;--l:#dfe6e2}*{box-sizing:border-box}
+body{margin:0;font-family:Cairo,sans-serif;background:#eef2ef;color:#10241e}
+.w{max-width:980px;margin:auto;padding:14px}.c{background:#fff;border:1px solid var(--l);border-radius:14px;padding:16px;margin-bottom:12px}
+.g{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}.n{font-size:28px;font-weight:900}.m{color:var(--m);font-size:13px}
+input,select,button{font:inherit;padding:10px;border:1px solid var(--l);border-radius:10px}
+button,.a{background:var(--g);color:#fff;border:0;cursor:pointer;font-weight:700;text-decoration:none;padding:7px 11px;border-radius:9px;font-size:13px;display:inline-block}
+.r{background:#b91c1c}.s{background:#475569}.o{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+th,td{padding:8px;border-bottom:1px solid var(--l);text-align:right}.h{display:none}.f{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.t{padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700}.pending{background:#fef3c7;color:#92400e}.confirmed{background:#d1fae5;color:#065f46}.rejected{background:#fee2e2;color:#991b1b}
+#L{max-width:360px;margin:12vh auto}#L input{width:100%;margin-bottom:8px}
+</style></head><body><div class="w">
+<div id="L" class="c" style="max-width:360px;margin:10vh auto"><h2 style="text-align:center;margin-top:0">لوحة التحويلات</h2>
+<div class="f" style="margin-bottom:10px"><button id="tl" style="flex:1">دخول</button><button id="ts" style="flex:1">حساب جديد</button></div>
+<input id="em" type="email" placeholder="الإيميل" autocomplete="username" dir="ltr" style="width:100%;margin-bottom:8px">
+<input id="pw" type="password" placeholder="كلمة السر (٦ حروف على الأقل)" autocomplete="current-password" dir="ltr" style="width:100%;margin-bottom:8px">
+<button id="go" style="width:100%;padding:11px">دخول</button>
+<div style="text-align:center;margin-top:8px"><a href="#" id="fp" class="m">نسيت كلمة السر؟</a></div>
+<div id="le" class="m" style="color:#b91c1c;margin-top:8px;text-align:center"></div></div>
+<div id="V" class="c h" style="max-width:360px;margin:10vh auto;text-align:center"><h2 style="margin-top:0">فعّل إيميلك</h2><p class="m" id="vm"></p>
+<div class="f" style="justify-content:center"><button id="vd">أنا فعّلت</button><button class="s" id="vr">ابعت الرسالة تاني</button><button class="s" id="vo">خروج</button></div><div id="ve" class="m" style="margin-top:8px"></div></div>
+<div id="P" class="c h" style="max-width:360px;margin:10vh auto;text-align:center"><h2 style="margin-top:0">بانتظار الموافقة</h2><p class="m">حسابك اتعمل لكن لسه مش مفعّل. صاحب الحساب لازم يوافق عليك من اللوحة، وبعدها دوس "جرّب تاني".</p>
+<div class="f" style="justify-content:center"><button id="pr">جرّب تاني</button><button class="s" id="po">خروج</button></div></div>
+<div id="A" class="h">
+<div class="f" style="justify-content:space-between;margin-bottom:10px"><h2 style="margin:0">لوحة التحويلات</h2><button class="s" id="out">خروج</button></div>
+<div class="g" id="st"></div>
+<div id="ow" class="c h" style="margin-top:12px"><b>الحسابات</b>
+<div class="o"><table style="min-width:420px"><tbody id="ot"></tbody></table></div><div id="oe" class="m">مفيش طلبات حسابات.</div></div>
+<div class="c" style="margin-top:12px"><b>المنتجات</b>
+<div class="f" style="margin:8px 0"><input id="pn" placeholder="اسم المنتج"><input id="pp" inputmode="decimal" placeholder="السعر بالجنيه"><button id="pb">إضافة منتج</button></div>
+<div class="o"><table style="min-width:520px"><tbody id="pt"></tbody></table></div><div id="pe" class="m">مفيش منتجات لسه. ضيف أول منتج وانسخ لينكه.</div></div>
+<div class="c" style="margin-top:12px"><b>تسجيل تحويل وصل (مؤكد)</b><div class="f" style="margin-top:8px">
+<input id="ma" inputmode="decimal" placeholder="المبلغ بالجنيه"><select id="mm"><option value="instapay">إنستاباي</option><option value="vodafone">فودافون كاش</option><option value="card">بطاقة</option><option value="cash">نقدي</option><option value="cod">عند الاستلام</option></select>
+<input id="mn" placeholder="اسم العميل / البيان"><button id="mb">حفظ</button><button class="s" id="ex">تصدير Excel</button></div></div>
+<div class="c o"><table><thead><tr><th>الرقم</th><th>الوقت</th><th>العميل</th><th>المبلغ</th><th>الطريقة</th><th>الحالة</th><th></th></tr></thead><tbody id="tb"></tbody></table>
+<div id="em0" class="m" style="padding:14px">مفيش عمليات لسه.</div></div>
+</div></div>
+<script type="module">
+import {db,auth} from './firebase-config.js';
+import {onAuthStateChanged,signOut,setPersistence,browserLocalPersistence,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendEmailVerification,sendPasswordResetEmail} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {collection,query,orderBy,onSnapshot,doc,updateDoc,setDoc,deleteDoc,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+const $=i=>document.getElementById(i),PH=['01091310361','01123050047','01062206779'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const egp=p=>(p/100).toLocaleString('ar-EG',{minimumFractionDigits:0,maximumFractionDigits:2})+' ج.م';
+const M={instapay:'إنستاباي',vodafone:'فودافون كاش',card:'بطاقة',cash:'نقدي',cod:'عند الاستلام'},S={pending:'بانتظار التأكيد',confirmed:'مؤكدة',rejected:'مرفوضة'};
+const split=t=>{const b=Math.floor(t/3),r=t%3;return[b+(r>0),b+(r>1),b]};
+let rows=[],prods=[],reqs=[],staff=[],first=true,subs=[],mode='in';
+const ERR={'auth/invalid-credential':'الإيميل أو كلمة السر غلط.','auth/invalid-email':'الإيميل مش مكتوب صح.','auth/email-already-in-use':'الإيميل ده عليه حساب بالفعل. جرّب تدخل.','auth/weak-password':'كلمة السر ضعيفة (٦ حروف على الأقل).','auth/missing-password':'اكتب كلمة السر.','auth/too-many-requests':'محاولات كتير. استنى شوية وجرب تاني.','auth/network-request-failed':'مشكلة في النت.','auth/operation-not-allowed':'الدخول بالإيميل مش متفعّل في Firebase.'};
+const setMode=m=>{mode=m;$('go').textContent=m==='in'?'دخول':'إنشاء الحساب';$('pw').autocomplete=m==='in'?'current-password':'new-password';
+  $('tl').style.background=m==='in'?'var(--g)':'#94a3b8';$('ts').style.background=m==='up'?'var(--g)':'#94a3b8';$('le').textContent=''};
+setMode('in');$('tl').onclick=()=>setMode('in');$('ts').onclick=()=>setMode('up');
+const go=async()=>{const em=$('em').value.trim().toLowerCase(),pw=$('pw').value;$('le').textContent='';
+  if(!em||!pw)return $('le').textContent='اكتب الإيميل وكلمة السر.';
+  try{await setPersistence(auth,browserLocalPersistence);
+    if(mode==='up'){const c=await createUserWithEmailAndPassword(auth,em,pw);await sendEmailVerification(c.user)}
+    else await signInWithEmailAndPassword(auth,em,pw)}
+  catch(e){$('le').textContent=ERR[e.code]||('حصلت مشكلة: '+e.code)}};
+$('go').onclick=go;$('pw').onkeydown=e=>{if(e.key==='Enter')go()};
+$('fp').onclick=async e=>{e.preventDefault();const em=$('em').value.trim();if(!em)return $('le').textContent='اكتب الإيميل الأول.';
+  try{await sendPasswordResetEmail(auth,em)}catch{}$('le').style.color='#065f46';$('le').textContent='لو الإيميل عليه حساب هتوصله رسالة لتغيير كلمة السر.';setTimeout(()=>{$('le').style.color='#b91c1c'},4000)};
+$('out').onclick=$('vo').onclick=$('po').onclick=()=>signOut(auth);
+$('vr').onclick=async()=>{try{await sendEmailVerification(auth.currentUser);$('ve').textContent='اتبعتت الرسالة تاني.'}catch(e){$('ve').textContent=ERR[e.code]||'استنى شوية وجرب تاني.'}};
+$('vd').onclick=async()=>{try{await auth.currentUser.reload();await auth.currentUser.getIdToken(true)}catch{}
+  if(auth.currentUser?.emailVerified)enter(auth.currentUser);else $('ve').textContent='لسه مش متفعّل. افتح الرسالة واضغط على اللينك الأول.'};
+$('pr').onclick=async()=>{try{await auth.currentUser.getIdToken(true)}catch{}enter(auth.currentUser)};
+const show=k=>['L','V','P','A'].forEach(x=>$(x).classList.toggle('h',x!==k));
+function enter(u){
+  subs.forEach(f=>f());subs=[];
+  if(!u)return show('L');
+  if(!u.emailVerified){$('vm').textContent='بعتنا رسالة تفعيل على '+u.email+'. افتحها واضغط على اللينك، وبعدين دوس "أنا فعّلت". شوف الـ Spam كمان.';return show('V')}
+  first=true;
+  subs.push(onSnapshot(query(collection(db,'payments'),orderBy('createdAt','desc')),s=>{
+    show('A');
+    if(!first&&s.docChanges().some(c=>c.type==='added'&&c.doc.data().status==='pending'))beep();
+    first=false;rows=s.docs.map(d=>({id:d.id,...d.data()}));draw();
+  },()=>{show('P');setDoc(doc(db,'access',u.uid),{email:(u.email||'').toLowerCase(),createdAt:serverTimestamp()}).catch(()=>{})}));
+  subs.push(onSnapshot(query(collection(db,'products'),orderBy('createdAt','desc')),s=>{prods=s.docs.map(d=>({id:d.id,...d.data()}));drawP()},()=>{}));
+  subs.push(onSnapshot(collection(db,'access'),s=>{reqs=s.docs.map(d=>({id:d.id,...d.data()}));$('ow').classList.remove('h');drawO()},()=>{}));
+  subs.push(onSnapshot(collection(db,'staff'),s=>{staff=s.docs.map(d=>({id:d.id,...d.data()}));drawO()},()=>{}));
+}
+onAuthStateChanged(auth,enter);
+function drawO(){$('oe').classList.toggle('h',reqs.length+staff.length>0);
+  $('ot').innerHTML=reqs.map(r=>`<tr><td dir="ltr">${esc(r.email)}</td><td><span class="t pending">بانتظار الموافقة</span></td><td><div class="f"><button data-ok="${esc(r.id)}">موافقة</button><button class="r" data-no="${esc(r.id)}">رفض</button></div></td></tr>`).join('')
+   +staff.map(s=>`<tr><td dir="ltr">${esc(s.id)}</td><td><span class="t confirmed">مفعّل</span></td><td><button class="r" data-rm="${esc(s.id)}">إلغاء</button></td></tr>`).join('')}
+$('ot').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.ok){const r=reqs.find(x=>x.id===b.dataset.ok);if(!r)return;await setDoc(doc(db,'staff',r.email),{addedAt:serverTimestamp()});await deleteDoc(doc(db,'access',r.id))}
+  else if(b.dataset.no)deleteDoc(doc(db,'access',b.dataset.no));
+  else if(b.dataset.rm&&confirm('إلغاء صلاحية الحساب ده؟'))deleteDoc(doc(db,'staff',b.dataset.rm))};
+const link=id=>new URL('pay.html?p='+id,location.href).href;
+function drawP(){$('pe').classList.toggle('h',prods.length>0);
+  $('pt').innerHTML=prods.map(p=>`<tr><td>${esc(p.name)}</td><td><b>${egp(p.price)}</b></td><td><span class="t ${p.active?'confirmed':'rejected'}">${p.active?'شغال':'موقوف'}</span></td><td><div class="f"><button data-c="${esc(p.id)}">نسخ اللينك</button><button class="s" data-e="${esc(p.id)}">السعر</button><button class="s" data-t="${esc(p.id)}">${p.active?'إيقاف':'تفعيل'}</button><button class="r" data-d="${esc(p.id)}">حذف</button></div></td></tr>`).join('')}
+$('pt').onclick=async e=>{const b=e.target.closest('button');if(!b)return;
+  const id=b.dataset.c||b.dataset.e||b.dataset.t||b.dataset.d,p=prods.find(x=>x.id===id);if(!p)return;
+  if(b.dataset.c){try{await navigator.clipboard.writeText(link(id));b.textContent='اتنسخ ✓'}catch{prompt('انسخ اللينك:',link(id))}}
+  else if(b.dataset.e){const v=parseFloat((prompt('السعر الجديد بالجنيه',p.price/100)||'').replace(',','.'));if(v>0)updateDoc(doc(db,'products',id),{price:Math.round(v*100)})}
+  else if(b.dataset.t)updateDoc(doc(db,'products',id),{active:!p.active});
+  else if(b.dataset.d&&confirm('حذف المنتج ده؟ اللينك بتاعه هيقف.'))deleteDoc(doc(db,'products',id))};
+$('pb').onclick=async()=>{const n=$('pn').value.trim(),v=parseFloat($('pp').value.replace(',','.'));if(!n||!(v>0))return alert('اكتب اسم المنتج وسعر صحيح');
+  const id=(Math.random().toString(36)+'000000').slice(2,8)+Date.now().toString(36).slice(-4);
+  await setDoc(doc(db,'products',id),{name:n.slice(0,100),price:Math.round(v*100),active:true,createdAt:serverTimestamp()});$('pn').value='';$('pp').value=''};
+const when=r=>r.createdAt?.toDate?r.createdAt.toDate():new Date();
+function draw(){
+  const ok=rows.filter(r=>r.status==='confirmed'),tot=ok.reduce((a,r)=>a+r.amount,0),
+  td=ok.filter(r=>when(r).toDateString()===new Date().toDateString()).reduce((a,r)=>a+r.amount,0),
+  pn=rows.filter(r=>r.status==='pending').length,sh=split(tot);
+  $('st').innerHTML=`<div class="c"><div class="m">إجمالي المؤكد</div><div class="n">${egp(tot)}</div><div class="m">${ok.length} عملية</div></div>
+  <div class="c"><div class="m">تحويلات النهارده</div><div class="n">${egp(td)}</div></div>
+  <div class="c"><div class="m">بانتظار التأكيد</div><div class="n">${pn}</div></div>
+  <div class="c"><div class="m">نصيب كل شريك</div><div class="n">${egp(sh[0])}</div><div class="m">الباقي من القروش بيتوزع بدقة</div></div>`;
+  $('em0').classList.toggle('h',rows.length>0);
+  $('tb').innerHTML=rows.map(r=>{
+    const s=split(r.amount),wa=[1,2].map(i=>`<a class="a s" target="_blank" rel="noopener" href="https://wa.me/2${PH[i]}?text=${encodeURIComponent(`تحويل مؤكد ${egp(r.amount)} (${r.id}) من ${r.name||''}. نصيبك: ${egp(s[i])}`)}">واتساب ${i+1}</a>`).join(' ');
+    const act=r.status==='pending'?`<button data-a="confirmed" data-i="${esc(r.id)}">تأكيد الاستلام</button> <button class="r" data-a="rejected" data-i="${esc(r.id)}">رفض</button>`:r.status==='confirmed'?wa:'';
+    return`<tr><td>${esc(r.id)}</td><td>${when(r).toLocaleString('ar-EG')}</td><td>${esc(r.name)}<div class="m">${esc(r.phone)}</div>${r.item?`<div class="m">🛒 ${esc(r.item)}</div>`:''}${r.address?`<div class="m">📍 ${esc(r.address)}</div>`:''}</td><td><b>${egp(r.amount)}</b></td><td>${M[r.method]||esc(r.method)}</td><td><span class="t ${esc(r.status)}">${S[r.status]||''}</span></td><td>${act}</td></tr>`}).join('');
+}
+$('tb').onclick=e=>{const b=e.target.closest('button[data-a]');if(!b)return;
+  if(b.dataset.a==='rejected'&&!confirm('رفض الطلب ده؟'))return;
+  updateDoc(doc(db,'payments',b.dataset.i),{status:b.dataset.a,reviewedBy:auth.currentUser.email,reviewedAt:serverTimestamp()});};
+$('mb').onclick=async()=>{const v=parseFloat($('ma').value.replace(',','.'));if(!(v>0))return alert('اكتب مبلغ صحيح');
+  const id=('M'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)).toUpperCase();
+  await setDoc(doc(db,'payments',id),{amount:Math.round(v*100),method:$('mm').value,name:$('mn').value.trim(),phone:'',note:'تسجيل يدوي',status:'confirmed',createdAt:serverTimestamp(),reviewedBy:auth.currentUser.email});
+  $('ma').value='';$('mn').value='';};
+$('ex').onclick=()=>{const q=v=>`"${String(v??'').replace(/"/g,'""')}"`;
+  const csv='\ufeff'+['الرقم,الوقت,العميل,الموبايل,العنوان,المنتج,المبلغ,الطريقة,الحالة',...rows.map(r=>[r.id,when(r).toLocaleString('ar-EG'),r.name,r.phone,r.address||'',r.item||'',r.amount/100,M[r.method]||r.method,S[r.status]].map(q).join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='payments.csv';a.click();};
+function beep(){try{const c=new AudioContext(),o=c.createOscillator();o.connect(c.destination);o.frequency.value=880;o.start();o.stop(c.currentTime+.25)}catch{}}
+</script></body></html>
